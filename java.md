@@ -18,7 +18,7 @@
 
 | Day | Date     | Topics                                         | Focus                          | Done ✅ |
 | --- | -------- | ---------------------------------------------- | ------------------------------ | ------ |
-| 1   | 2 April  | Data Types, Variables, Operators, Control Flow | Output questions, Type casting | [ ]    |
+| 1   | 2 April  | Data Types, Variables, Operators, Control Flow | Output questions, Type casting | [https://github.com/adityadevraj699/java-fullstack-16-week-roadmap/tree/main/JAVA%20NOTES/DAY1 ]    |
 | 2   | 3 April  | Arrays, Stack vs Heap, Pass by Value           | Internal working, tricky Qs    | [ ]    |
 | 3   | 4 April  | Class, Object, Encapsulation, Constructors     | Real-life + chaining           | [ ]    |
 | 4   | 5 April  | Inheritance, Polymorphism                      | Runtime vs Compile, IS-A/HAS-A | [ ]    |
