@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Spring Security — Deep Flow Diagram</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg2: #f5f5f4;
+    --text: #1a1918;
+    --text2: #5f5e5a;
+    --border: rgba(0,0,0,0.12);
+    --purple-fill: #EEEDFE; --purple-stroke: #534AB7; --purple-text: #3C3489;
+    --teal-fill: #E1F5EE;   --teal-stroke: #0F6E56;   --teal-text: #085041;
+    --gray-fill: #F1EFE8;   --gray-stroke: #5F5E5A;   --gray-text: #444441;
+    --amber-fill: #FAEEDA;  --amber-stroke: #854F0B;  --amber-text: #633806;
+    --red-fill: #FCEBEB;    --red-stroke: #A32D2D;    --red-text: #791F1F;
+    --green-fill: #EAF3DE;  --green-stroke: #3B6D11;  --green-text: #27500A;
+    --coral-fill: #FAECE7;  --coral-stroke: #993C1D;  --coral-text: #712B13;
+    --arr: #888780;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a; --bg2: #252523; --text: #e8e6de; --text2: #9c9a92;
+      --border: rgba(255,255,255,0.1);
+      --purple-fill: #26215C; --purple-stroke: #AFA9EC; --purple-text: #CECBF6;
+      --teal-fill: #04342C;   --teal-stroke: #5DCAA5;   --teal-text: #9FE1CB;
+      --gray-fill: #2C2C2A;   --gray-stroke: #B4B2A9;   --gray-text: #D3D1C7;
+      --amber-fill: #412402;  --amber-stroke: #EF9F27;  --amber-text: #FAC775;
+      --red-fill: #501313;    --red-stroke: #F09595;    --red-text: #F7C1C1;
+      --green-fill: #173404;  --green-stroke: #97C459;  --green-text: #C0DD97;
+      --coral-fill: #4A1B0C;  --coral-stroke: #F0997B;  --coral-text: #F5C4B3;
+      --arr: #888780;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, sans-serif;
+    padding: 24px 16px 40px;
+    min-height: 100vh;
+  }
+  h1 {
+    font-size: 20px; font-weight: 500;
+    text-align: center;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .subtitle {
+    text-align: center; font-size: 13px;
+    color: var(--text2); margin-bottom: 28px;
+  }
+  .diagram-wrap {
+    max-width: 720px; margin: 0 auto;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 16px;
+    overflow-x: auto;
+  }
+  svg text { font-family: system-ui, -apple-system, sans-serif; }
+  .th { font-size: 14px; font-weight: 500; fill: var(--text); }
+  .ts { font-size: 12px; font-weight: 400; fill: var(--text2); }
+  .box-purple { fill: var(--purple-fill); stroke: var(--purple-stroke); }
+  .box-teal   { fill: var(--teal-fill);   stroke: var(--teal-stroke); }
+  .box-gray   { fill: var(--gray-fill);   stroke: var(--gray-stroke); }
+  .box-amber  { fill: var(--amber-fill);  stroke: var(--amber-stroke); }
+  .box-red    { fill: var(--red-fill);    stroke: var(--red-stroke); }
+  .box-green  { fill: var(--green-fill);  stroke: var(--green-stroke); }
+  .box-coral  { fill: var(--coral-fill);  stroke: var(--coral-stroke); }
+  .t-purple { fill: var(--purple-text); }
+  .t-teal   { fill: var(--teal-text); }
+  .t-gray   { fill: var(--gray-text); }
+  .t-amber  { fill: var(--amber-text); }
+  .t-red    { fill: var(--red-text); }
+  .t-green  { fill: var(--green-text); }
+  .t-coral  { fill: var(--coral-text); }
+  .arr-line { stroke: var(--arr); stroke-width: 1.2; fill: none; }
+  .arr-dash { stroke: var(--arr); stroke-width: 1; fill: none; stroke-dasharray: 3 2; }
+  .divider  { stroke: var(--border); stroke-width: 0.5; stroke-dasharray: 4 4; }
+  .section-header { font-size: 13px; font-weight: 500; fill: var(--text2); }
+  .section-sub    { font-size: 11px; fill: var(--text2); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 14px 20px; justify-content: center; margin-top: 20px; max-width: 720px; margin-left: auto; margin-right: auto; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text2); }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; border: 1px solid; flex-shrink: 0; }
+  .ld-purple { background: var(--purple-fill); border-color: var(--purple-stroke); }
+  .ld-teal   { background: var(--teal-fill);   border-color: var(--teal-stroke); }
+  .ld-gray   { background: var(--gray-fill);   border-color: var(--gray-stroke); }
+  .ld-amber  { background: var(--amber-fill);  border-color: var(--amber-stroke); }
+  .ld-red    { background: var(--red-fill);    border-color: var(--red-stroke); }
+  .ld-green  { background: var(--green-fill);  border-color: var(--green-stroke); }
+  .ld-coral  { background: var(--coral-fill);  border-color: var(--coral-stroke); }
+</style>
+</head>
+<body>
+<h1>Spring Security — Deep Flow Diagram</h1>
+<p class="subtitle">Authentication flow (login) &nbsp;·&nbsp; Request flow (every API call)</p>
+
+<div class="diagram-wrap">
+<svg width="100%" viewBox="0 0 680 650" role="img">
+  <title>Spring Security deep flow</title>
+  <desc>Left column: Authentication flow — Client to JWT token. Right column: Request flow — Client through JwtFilter to Controller.</desc>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- Column labels -->
+  <text class="section-header" x="145" y="34" text-anchor="middle">Authentication flow</text>
+  <text class="section-sub"    x="145" y="52" text-anchor="middle">login · token generation</text>
+  <text class="section-header" x="535" y="34" text-anchor="middle">Request flow</text>
+  <text class="section-sub"    x="535" y="52" text-anchor="middle">every API call</text>
+
+  <!-- Divider -->
+  <line class="divider" x1="335" y1="16" x2="335" y2="600"/>
+
+  <!-- ===== AUTH FLOW (left col: x=40 w=210 cx=145) ===== -->
+  <!-- 1 Client -->
+  <rect class="box-purple" x="40" y="76" width="210" height="56" rx="8" stroke-width="0.5"/>
+  <text class="th t-purple" x="145" y="97"  text-anchor="middle" dominant-baseline="central">Client</text>
+  <text class="ts t-purple" x="145" y="117" text-anchor="middle" dominant-baseline="central">POST /login</text>
+  <line class="arr-line" x1="145" y1="132" x2="145" y2="155" marker-end="url(#arr)"/>
+
+  <!-- 2 AuthController -->
+  <rect class="box-teal" x="40" y="156" width="210" height="56" rx="8" stroke-width="0.5"/>
+  <text class="th t-teal" x="145" y="177" text-anchor="middle" dominant-baseline="central">AuthController</text>
+  <text class="ts t-teal" x="145" y="197" text-anchor="middle" dominant-baseline="central">receives credentials</text>
+  <line class="arr-line" x1="145" y1="212" x2="145" y2="235" marker-end="url(#arr)"/>
+
+  <!-- 3 AuthenticationManager -->
+  <rect class="box-teal" x="40" y="236" width="210" height="56" rx="8" stroke-width="0.5"/>
+  <text class="th t-teal" x="145" y="257" text-anchor="middle" dominant-baseline="central">AuthenticationManager</text>
+  <text class="ts t-teal" x="145" y="277" text-anchor="middle" dominant-baseline="central">delegates to provider</text>
+  <line class="arr-line" x1="145" y1="292" x2="145" y2="315" marker-end="url(#arr)"/>
+
+  <!-- 4 UserDetailsService -->
+  <rect class="box-teal" x="40" y="316" width="210" height="56" rx="8" stroke-width="0.5"/>
+  <text class="th t-teal" x="145" y="337" text-anchor="middle" dominant-baseline="central">UserDetailsService</text>
+  <text class="ts t-teal" x="145" y="357" text-anchor="middle" dominant-baseline="central">loadUserByUsername()</text>
+  <line class="arr-line" x1="145" y1="372" x2="145" y2="395" marker-end="url(#arr)"/>
+
+  <!-- 5 Database -->
+  <rect class="box-gray" x="40" y="396" width="210" height="56" rx="8" stroke-width="0.5"/>
+  <text class="th t-gray" x="145" y="417" text-anchor="middle" dominant-baseline="central">Database</text>
+  <text class="ts t-gray" x="145" y="437" text-anchor="middle" dominant-baseline="central">SELECT user</text>
+  <line class="arr-line" x1="145" y1="452" x2="145" y2="475" marker-end="url(#arr)"/>
+
+  <!-- 6 PasswordEncoder -->
+  <rect class="box-teal" x="40" y="476" width="210" height="56" rx="8" stroke-width="0.5"/>
+  <text class="th t-teal" x="145" y="497" text-anchor="middle" dominant-baseline="central">PasswordEncoder</text>
+  <text class="ts t-teal" x="145" y="517" text-anchor="middle" dominant-baseline="central">BCrypt.matches()</text>
+  <line class="arr-line" x1="145" y1="532" x2="145" y2="555" marker-end="url(#arr)"/>
+
+  <!-- 7 JWT -->
+  <rect class="box-amber" x="40" y="556" width="210" height="56" rx="8" stroke-width="0.5"/>
+  <text class="th t-amber" x="145" y="577" text-anchor="middle" dominant-baseline="central">JWT token</text>
+  <text class="ts t-amber" x="145" y="597" text-anchor="middle" dominant-baseline="central">returned to client</text>
+
+  <!-- ===== REQUEST FLOW (right col: x=435 w=200 cx=535) ===== -->
+  <!-- 1 Client -->
+  <rect class="box-purple" x="435" y="76" width="200" height="56" rx="8" stroke-width="0.5"/>
+  <text class="th t-purple" x="535" y="97"  text-anchor="middle" dominant-baseline="central">Client</text>
+  <text class="ts t-purple" x="535" y="117" text-anchor="middle" dominant-baseline="central">+ Bearer token in header</text>
+  <line class="arr-line" x1="535" y1="132" x2="535" y2="155" marker-end="url(#arr)"/>
+
+  <!-- 2 JwtFilter -->
+  <rect class="box-teal" x="435" y="156" width="200" height="56" rx="8" stroke-width="0.5"/>
+  <text class="th t-teal" x="535" y="177" text-anchor="middle" dominant-baseline="central">JwtFilter</text>
+  <text class="ts t-teal" x="535" y="197" text-anchor="middle" dominant-baseline="central">OncePerRequestFilter</text>
+  <line class="arr-line" x1="535" y1="212" x2="535" y2="235" marker-end="url(#arr)"/>
+
+  <!-- 3 Token valid? -->
+  <rect class="box-coral" x="435" y="236" width="200" height="56" rx="8" stroke-width="0.5"/>
+  <text class="th t-coral" x="535" y="257" text-anchor="middle" dominant-baseline="central">Token valid?</text>
+  <text class="ts t-coral" x="535" y="277" text-anchor="middle" dominant-baseline="central">parse + verify signature</text>
+  <!-- error branch -->
+  <line class="arr-dash" x1="435" y1="264" x2="412" y2="264" marker-end="url(#arr)"/>
+  <rect class="box-red" x="338" y="250" width="70" height="28" rx="6" stroke-width="0.5"/>
+  <text class="th t-red" x="373" y="264" text-anchor="middle" dominant-baseline="central">401/403</text>
+  <text class="ts" x="422" y="250" text-anchor="middle">invalid</text>
+  <!-- valid arrow -->
+  <line class="arr-line" x1="535" y1="292" x2="535" y2="315" marker-end="url(#arr)"/>
+  <text class="ts" x="556" y="308" text-anchor="start">valid</text>
+
+  <!-- 4 SecurityContextHolder -->
+  <rect class="box-teal" x="435" y="316" width="200" height="56" rx="8" stroke-width="0.5"/>
+  <text class="th t-teal" x="535" y="337" text-anchor="middle" dominant-baseline="central">SecurityContextHolder</text>
+  <text class="ts t-teal" x="535" y="357" text-anchor="middle" dominant-baseline="central">set Authentication object</text>
+  <line class="arr-line" x1="535" y1="372" x2="535" y2="395" marker-end="url(#arr)"/>
+
+  <!-- 5 SecurityConfig -->
+  <rect class="box-teal" x="435" y="396" width="200" height="56" rx="8" stroke-width="0.5"/>
+  <text class="th t-teal" x="535" y="417" text-anchor="middle" dominant-baseline="central">SecurityConfig</text>
+  <text class="ts t-teal" x="535" y="437" text-anchor="middle" dominant-baseline="central">role-based access check</text>
+  <line class="arr-line" x1="535" y1="452" x2="535" y2="475" marker-end="url(#arr)"/>
+
+  <!-- 6 Controller -->
+  <rect class="box-green" x="435" y="476" width="200" height="56" rx="8" stroke-width="0.5"/>
+  <text class="th t-green" x="535" y="497" text-anchor="middle" dominant-baseline="central">Controller</text>
+  <text class="ts t-green" x="535" y="517" text-anchor="middle" dominant-baseline="central">handle request</text>
+</svg>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot ld-purple"></div>External (Client)</div>
+  <div class="legend-item"><div class="legend-dot ld-teal"></div>Spring Security class</div>
+  <div class="legend-item"><div class="legend-dot ld-gray"></div>Database</div>
+  <div class="legend-item"><div class="legend-dot ld-amber"></div>JWT token</div>
+  <div class="legend-item"><div class="legend-dot ld-coral"></div>Decision / validation</div>
+  <div class="legend-item"><div class="legend-dot ld-red"></div>Error response</div>
+  <div class="legend-item"><div class="legend-dot ld-green"></div>Success / Controller</div>
+</div>
+</body>
+</html>
